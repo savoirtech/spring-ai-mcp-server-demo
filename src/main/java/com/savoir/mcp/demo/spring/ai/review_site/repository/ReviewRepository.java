@@ -13,7 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.savoir.mcp.demo.spring.ai.review_site;
+package com.savoir.mcp.demo.spring.ai.review_site.repository;
 
-public record Review(String bookTitle, String author, String opinion, int rating) {
+import com.savoir.mcp.demo.spring.ai.review_site.model.Review;
+import java.util.List;
+import org.springframework.data.repository.CrudRepository;
+
+public interface ReviewRepository extends CrudRepository<Review, Long> {
+
+    Review findReviewByBookTitle(String bookTitle);
+
+    List<Review> findAllReviewsByAuthor(String author);
 }
