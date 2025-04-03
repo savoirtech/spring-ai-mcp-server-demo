@@ -11,7 +11,7 @@ mvn clean package -DskipTests
 ## Run
 
 ```bash
-java -jar target/review-site-0.0.1-SNAPSHOT.jar
+mvn spring-boot:run
 ```
 
 alt
