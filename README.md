@@ -85,7 +85,7 @@ When we run the script with Heath Kesler, we'll observe a return to 200 and or 4
 
 In the logs we'll see:
 ```text
-2025-05-01T15:55:49.884-02:30 ERROR 16366 --- [review-site] [ctor-http-nio-2] c.s.m.d.s.a.r.e.GlobalExceptionHandler   : CircuitBreaker 'reviewCircuit' is OPEN and does not permit further calls
+2025-05-01T15:56:38.854-02:30 ERROR 16366 --- [review-site] [tor-http-nio-11] c.s.m.d.s.a.r.e.GlobalExceptionHandler   : CircuitBreaker 'reviewCircuit' is HALF_OPEN and does not permit further calls
 ```
 
 Then calls will begin to succeed as per usual.
