@@ -13,39 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.savoir.mcp.demo.spring.ai.review_site;
+package com.savoir.mcp.demo.spring.ai.review_site.service;
 
 import com.savoir.mcp.demo.spring.ai.review_site.model.Review;
 import com.savoir.mcp.demo.spring.ai.review_site.repository.ReviewRepository;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.ai.tool.annotation.Tool;
-import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Service;
-import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 
 @Service
-public class ReviewService {
+public class ReviewSiteService {
 
-    private static final Logger log = LoggerFactory.getLogger(ReviewService.class);
+    private static final Logger log = LoggerFactory.getLogger(ReviewSiteService.class);
     private ReviewRepository reviewRepository;
 
-    public ReviewService(ReviewRepository reviewRepository) {
+    public ReviewSiteService(ReviewRepository reviewRepository) {
         this.reviewRepository = reviewRepository;
     }
 
-    @Bulkhead(name = "reviewBulkhead", type = Bulkhead.Type.THREADPOOL)
-    @Tool(name = "review-site_get_all_reviews_by_author", description = "Get all book reviews on review-site by Author.")
-    public List<Review> findAllReviewsByAuthor(@ToolParam(description = "Author") String author) {
-        log.info("findAllReviewsByAuthor: {}", author);
+    @Bulkhead(name = "reviewBulkhead", type = Bulkhead.Type.SEMAPHORE)
+    public List<Review> findAllReviewsByAuthor(String author) {
+        log.info("CoreService: findAllReviewsByAuthor: {}", author);
+        try {
+            Thread.sleep(3000); // Simulate a delay
+        } catch (InterruptedException e) {
+            //ignore
+        }
         return (List<Review>) reviewRepository.findAllReviewsByAuthor(author);
     }
 
-    @Bulkhead(name = "reviewBulkhead", type = Bulkhead.Type.THREADPOOL)
-    @Tool(name = "review-site_get_review_by_title", description = "Get a single review from savoir review-site by book title")
-    public Review getReviewByTitle(@ToolParam(description = "BookTitle") String bookTitle) {
-        log.info("getReviewByTitle: {}", bookTitle);
+    @Bulkhead(name = "reviewBulkhead", type = Bulkhead.Type.SEMAPHORE)
+    public Review getReviewByTitle(String bookTitle) {
+        log.info("CoreService: getReviewByTitle: {}", bookTitle);
+        try {
+            Thread.sleep(3000); // Simulate a delay
+        } catch (InterruptedException e) {
+            //ignore
+        }
         return reviewRepository.findReviewByBookTitle(bookTitle);
     }
 

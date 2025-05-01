@@ -15,13 +15,14 @@
  */
 package com.savoir.mcp.demo.spring.ai.review_site;
 
+import com.savoir.mcp.demo.spring.ai.review_site.service.MCPReviewService;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.tool.method.MethodToolCallbackProvider;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.savoir.mcp.demo.spring.ai.review_site"})
 public class ReviewSiteApplication {
 
 	public static void main(String[] args) {
@@ -29,7 +30,7 @@ public class ReviewSiteApplication {
 	}
 
 	@Bean
-	public ToolCallbackProvider reviewSiteTools(ReviewService reviewService) {
+	public ToolCallbackProvider reviewSiteTools(MCPReviewService reviewService) {
 		return MethodToolCallbackProvider.builder()
 				.toolObjects(reviewService)
 				.build();
