@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Service;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 
 @Service
 public class ReviewService {
@@ -34,13 +35,17 @@ public class ReviewService {
         this.reviewRepository = reviewRepository;
     }
 
+    @Bulkhead(name = "reviewBulkhead", type = Bulkhead.Type.THREADPOOL)
     @Tool(name = "review-site_get_all_reviews_by_author", description = "Get all book reviews on review-site by Author.")
     public List<Review> findAllReviewsByAuthor(@ToolParam(description = "Author") String author) {
+        log.info("findAllReviewsByAuthor: {}", author);
         return (List<Review>) reviewRepository.findAllReviewsByAuthor(author);
     }
 
+    @Bulkhead(name = "reviewBulkhead", type = Bulkhead.Type.THREADPOOL)
     @Tool(name = "review-site_get_review_by_title", description = "Get a single review from savoir review-site by book title")
     public Review getReviewByTitle(@ToolParam(description = "BookTitle") String bookTitle) {
+        log.info("getReviewByTitle: {}", bookTitle);
         return reviewRepository.findReviewByBookTitle(bookTitle);
     }
 
