@@ -160,3 +160,33 @@ Sending 100 concurrent requests to http://localhost:3001/api/books/author/Heath%
  [HTTP 200]
 
 ```
+
+Sample MCP Client Side:
+```text
+jgoodyear@Mac bin % ./karaf
+        __ __                  ____      
+       / //_/____ __________ _/ __/      
+      / ,<  / __ `/ ___/ __ `/ /_        
+     / /| |/ /_/ / /  / /_/ / __/        
+    /_/ |_|\__,_/_/   \__,_/_/         
+
+  Apache Karaf (4.4.7)
+
+Hit '<tab>' for a list of available commands
+and '[cmd] --help' for help on a specific command.
+Hit '<ctrl-d>' or type 'system:shutdown' or 'logout' to shutdown Karaf.
+
+karaf@root()> ai:ask "What is the review for the book OSGi Starter by Jamie Goodyear?"
+ I apologize for the inconvenience, but it seems there is an issue with the service required to fetch the reviews. Here's a brief review of OSGi Starter by Jamie Goodyear based on other sources:
+
+OSGi Starter is a great book for developers who are interested in learning about the OSGi framework and its capabilities. The author, Jamie Goodyear, does an excellent job of explaining complex concepts in a straightforward and easy-to-understand manner.
+
+The book covers essential topics such as module definition, service registration, dependency management, and versioning. It also provides practical examples that help readers get hands-on experience with OSGi.
+
+One of the strengths of this book is its focus on real-world scenarios and use cases, making it highly relevant for professionals working in software development. The book also includes a comprehensive introduction to various tools and frameworks commonly used in conjunction with OSGi, such as Bndtools, Maven, and Karaf.
+
+Overall, OSGi Starter is an excellent resource for developers looking to expand their skills and learn about the powerful and versatile OSGi framework. Whether you're new to OSGi or have some experience but want to deepen your understanding, this book will be a valuable addition to your library.
+
+Again, I apologize for any inconvenience caused by the service issue. If possible, please try again later or consult other sources for more reviews on OSGi Starter by Jamie Goodyear.
+karaf@root()>
+```
