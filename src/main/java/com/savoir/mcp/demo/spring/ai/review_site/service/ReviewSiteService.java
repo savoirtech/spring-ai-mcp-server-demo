@@ -18,9 +18,12 @@ package com.savoir.mcp.demo.spring.ai.review_site.service;
 import com.savoir.mcp.demo.spring.ai.review_site.model.Review;
 import com.savoir.mcp.demo.spring.ai.review_site.repository.ReviewRepository;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,15 +36,25 @@ public class ReviewSiteService {
         this.reviewRepository = reviewRepository;
     }
 
+    @CircuitBreaker(name = "reviewCircuit", fallbackMethod = "fallbackFindAllReviewsByAuthor")
     @Bulkhead(name = "reviewBulkhead", type = Bulkhead.Type.SEMAPHORE)
     public List<Review> findAllReviewsByAuthor(String author) {
         log.info("CoreService: findAllReviewsByAuthor: {}", author);
         try {
-            Thread.sleep(3000); // Simulate a delay
+            Thread.sleep(500); // Simulate a delay
         } catch (InterruptedException e) {
             //ignore
         }
+        // Simulating failure
+        if (author.equals("Jamie Goodyear")) {
+            throw new RuntimeException("Service unavailable");
+        }
         return (List<Review>) reviewRepository.findAllReviewsByAuthor(author);
+    }
+
+    public ResponseEntity<String> fallbackFindAllReviewsByAuthor(Throwable t) {
+        log.info("CoreService: fallbackFindAllReviewsByAuthor: graceful failure");
+        return new ResponseEntity<>("Service Unavailable. Please try again later.", HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     @Bulkhead(name = "reviewBulkhead", type = Bulkhead.Type.SEMAPHORE)
