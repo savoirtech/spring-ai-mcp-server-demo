@@ -57,3 +57,36 @@ Server Side Error Message:
 
 io.github.resilience4j.bulkhead.BulkheadFullException: Bulkhead 'reviewBulkhead' is full and does not permit further calls
 ```
+
+## Testing Circuit Breaker
+
+```text
+sh test_circuitBreaker.sh
+```
+
+The provided shell script will launch 100 requests to the find review by author endpoint. 
+
+When its configured to search Jamie Goodyear the endpoint will always fail. When its set to Heath Kesler the endpoint will always succeed. Using this property we can explore the nature of circuit breakers.
+
+When we run the script for Heath Kesler, we'll observe 200 and 429 HTTP codes. These represent successful calls (200), and Bulkhead (429). When we run the script with Jamie Goodyear we'll observe 500 error codes.
+
+Checking the server side logs, we'll find:
+```text
+2025-05-01T15:55:49.884-02:30 ERROR 16366 --- [review-site] [ctor-http-nio-2] c.s.m.d.s.a.r.e.GlobalExceptionHandler   : CircuitBreaker 'reviewCircuit' is OPEN and does not permit further calls
+```
+
+Running a single request after will get:
+```text
+jgoodyear@Mac spring-ai-mcp-server-demo % curl -X GET http://localhost:3001/api/books/author/Jamie%20Goodyear
+Circuit Breaker is OPEN. Please try again later.% 
+```
+
+When we run the script with Heath Kesler, we'll observe a return to 200 and or 429 codes. The circuit is restored.
+
+In the logs we'll see:
+```text
+2025-05-01T15:55:49.884-02:30 ERROR 16366 --- [review-site] [ctor-http-nio-2] c.s.m.d.s.a.r.e.GlobalExceptionHandler   : CircuitBreaker 'reviewCircuit' is OPEN and does not permit further calls
+```
+
+Then calls will begin to succeed as per usual.
+

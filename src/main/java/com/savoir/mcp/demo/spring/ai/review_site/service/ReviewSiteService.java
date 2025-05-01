@@ -36,7 +36,7 @@ public class ReviewSiteService {
         this.reviewRepository = reviewRepository;
     }
 
-    @CircuitBreaker(name = "reviewCircuit", fallbackMethod = "fallbackFindAllReviewsByAuthor")
+    @CircuitBreaker(name = "reviewCircuit")
     @Bulkhead(name = "reviewBulkhead", type = Bulkhead.Type.SEMAPHORE)
     public List<Review> findAllReviewsByAuthor(String author) {
         log.info("CoreService: findAllReviewsByAuthor: {}", author);
@@ -52,6 +52,7 @@ public class ReviewSiteService {
         return (List<Review>) reviewRepository.findAllReviewsByAuthor(author);
     }
 
+    //fallback method for reviewCircuit
     public ResponseEntity<String> fallbackFindAllReviewsByAuthor(Throwable t) {
         log.info("CoreService: fallbackFindAllReviewsByAuthor: graceful failure");
         return new ResponseEntity<>("Service Unavailable. Please try again later.", HttpStatus.SERVICE_UNAVAILABLE);
